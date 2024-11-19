@@ -5,7 +5,7 @@
  * Description: AudioIgniter lets you create music playlists and embed them in your WordPress posts, pages or custom post types and serve your audio content in style!
  * Author: The CSSIgniter Team
  * Author URI: https://www.cssigniter.com
- * Version: 2.0.0
+ * Version: 2.0.1
  * Text Domain: audioigniter
  * Domain Path: languages
  *
@@ -121,7 +121,7 @@ class AudioIgniter {
 			if ( ! function_exists( 'get_plugin_data' ) ) {
 				include_once ABSPATH . 'wp-admin/includes/plugin.php';
 			}
-			$plugin_data = get_plugin_data( __FILE__ );
+			$plugin_data = get_plugin_data( __FILE__, true, false );
 
 			$this->version = $plugin_data['Version'];
 		}
@@ -129,7 +129,9 @@ class AudioIgniter {
 		self::$plugin_url  = plugin_dir_url( __FILE__ );
 		self::$plugin_path = plugin_dir_path( __FILE__ );
 
-		load_plugin_textdomain( 'audioigniter', false, dirname( self::plugin_basename() ) . '/languages' );
+		add_action( 'init', function() {
+			load_plugin_textdomain( 'audioigniter', false, dirname( self::plugin_basename() ) . '/languages' );
+		} );
 
 		require_once untrailingslashit( $this->plugin_path() ) . '/inc/class-audioigniter-sanitizer.php';
 		$this->sanitizer = new AudioIgniter_Sanitizer();
@@ -1218,7 +1220,7 @@ class AudioIgniter {
 
 		$post = get_post( $id );
 
-		$params = apply_filters( 'audioigniter_shortcode_data_attributes_array', $this->get_playlist_data_attributes_array( $id ), $id, $post );
+		$params = apply_filters( 'audioigniter_shortcode_data_attributes_array', $this->get_playlist_data_attributes_array( $id ), $id, $post, $atts );
 		$params = array_filter( $params, array( $this->sanitizer, 'array_filter_empty_null' ) );
 		$params = $this->sanitizer->html_data_attributes_array( $params );
 
@@ -1306,6 +1308,9 @@ class AudioIgniter {
 			$track_response['cover'] = $cover_url;
 
 			$track_response = apply_filters( 'audioigniter_playlist_endpoint_track', $track_response, $track, $playlist_id, $post );
+			if ( false === $track_response ) {
+				continue;
+			}
 
 			$response[] = $track_response;
 		}
