@@ -2,8 +2,8 @@
 Contributors: cssigniterteam, anastis, silencerius, tsiger
 Tags: audio, audio player, html5 player, mp3 player, podcast
 Requires at least: 6.0
-Tested up to: 6.9
-Stable tag: 2.0.3
+Tested up to: 7.0
+Stable tag: 2.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -112,18 +112,21 @@ Visit the [GitHub repository](https://github.com/cssigniter/audioigniter) for fu
 
 == Changelog ==
 
+= 2.0.4 =
+* Fixed minor issues with the admin styles.
+
 = 2.0.3 =
-Fixed issue where playlist information would be returned by the playlist JSON endpoint for playlists that were not yet published (CVE-2026-8679, props nudien udin).
+* Fixed issue where playlist information would be returned by the playlist JSON endpoint for playlists that were not yet published (CVE-2026-8679, props nudien udin).
 
 = 2.0.2 =
-Added support for custom list playback rates when using the [ai_track] shortcode (AudioIgniter Pro).
-Fixed missing gettext domain issue.
-Removed call to load_plugin_textdomain().
+* Added support for custom list playback rates when using the [ai_track] shortcode (AudioIgniter Pro).
+* Fixed missing gettext domain issue.
+* Removed call to load_plugin_textdomain().
 
 = 2.0.1 =
-Fixed issue where a PHP notice would get thrown (in WP 6.7) regarding translations loading too early.
-Fixed issue where the player would break when repeating a single track via the [ai_track] shortcode (pro).
-Allow short-circuiting individual tracks from appearing in the endpoint, by returning false in the audioigniter_playlist_endpoint_track filter.
+* Fixed issue where a PHP notice would get thrown (in WP 6.7) regarding translations loading too early.
+* Fixed issue where the player would break when repeating a single track via the [ai_track] shortcode (pro).
+* Allow short-circuiting individual tracks from appearing in the endpoint, by returning false in the audioigniter_playlist_endpoint_track filter.
 
 = 2.0.0 =
 * Added AudioIgniter top level menu.
