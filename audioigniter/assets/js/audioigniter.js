@@ -120,8 +120,23 @@ jQuery(function($) {
         .not(":button")
         .each(function() {
           var $this = $(this);
+          var type = ($this.attr("type") || "").toLowerCase();
+
           $this.attr("id", $this.attr("id").replace(fieldHash, newHash));
           $this.attr("name", $this.attr("name").replace(fieldHash, newHash));
+
+          /*
+           * A checkbox's value is its contract with the server, not user input:
+           * blanking it makes a checked box submit an empty string, which reads
+           * as unchecked on save. Reset the checked state instead, to whatever
+           * the markup declares through `data-default-checked` (defaults to
+           * unchecked when the attribute is absent).
+           */
+          if (type === "checkbox" || type === "radio") {
+            $this.prop("checked", $this.attr("data-default-checked") === "1");
+            return;
+          }
+
           $this.val("");
         });
       $field.find("label").each(function() {
@@ -142,9 +157,20 @@ jQuery(function($) {
      */
     function isTrackFieldEmpty($field) {
       var isEmpty = true;
-      var $inputs = $field.find("input");
+      var $inputs = $field.find("input, textarea, select").not(":button");
       $inputs.each(function() {
-        if ($(this).val()) {
+        var $this = $(this);
+        var type = ($this.attr("type") || "").toLowerCase();
+
+        /*
+         * Checkboxes and radios always carry a value attribute regardless of
+         * their checked state, so they say nothing about the field's contents.
+         */
+        if (type === "checkbox" || type === "radio") {
+          return;
+        }
+
+        if ($this.val()) {
           isEmpty = false;
         }
       });
@@ -217,6 +243,8 @@ jQuery(function($) {
       if (media.meta && media.meta.artist && $artistInput.val() === "") {
         $artistInput.val(media.meta.artist);
       }
+
+      $(document).trigger("audioigniter:track-populated", [$field, media]);
     }
 
     /**
